@@ -1,0 +1,8 @@
+<template>
+  <require from="./MapWidget"></require>
+  <require from="./IssueList"></require>
+  <div class="no4pxSpace">
+    <issue-list class="list" select-marker.call="selectMarker(id)" selected-marker-id.to-view="selectedMarkerId" issues.bind="filteredIssues"></issue-list>
+    <map-widget class="map" bounds.from-view="bounds" select-marker.call="selectMarker(id)" selected-marker-id.bind="selectedMarkerId" issues.bind="issueService.getIssues()"></map-widget>
+  </div>
+</template>

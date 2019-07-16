@@ -1,0 +1,13 @@
+<template>
+  <require from="leaflet/dist/leaflet.css"></require>
+  <require from="leaflet.locatecontrol/dist/L.Control.Locate.min.css"></require>
+  <require from="app.css"></require>
+  <div class="overlay">
+    <div id='map'></div>
+    <img class="overlayIcon" src="../static/plus.png">
+    <div class="overlayedControls">
+      <button class="addButton" click.trigger="addIssue(map.getCenter())">+</button>
+    </div>
+  </div>
+
+</template>

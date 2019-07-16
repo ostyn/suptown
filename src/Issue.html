@@ -1,0 +1,13 @@
+<template>
+  <div if.bind="!selected">
+    <div>${issue.title}</div>
+    <!-- https://m.xkcd.com/2170/ -->
+    <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
+    <div>${issue.description}</div>
+  </div>
+  <div if.bind="selected">
+    <div><input value.bind="issue.title"></div>
+    <textarea style="width:calc(100% - 10px)" value.bind="issue.description"></textarea>
+  </div>
+  <button click.trigger="issueService.removeIssue(issue.id)">delete</button>
+</template>
