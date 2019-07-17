@@ -5,6 +5,7 @@ import { inject, BindingEngine, bindable } from "aurelia-framework";
 import * as leafletPip from "@mapbox/leaflet-pip";
 import { Issue } from './Issue';
 import { IssueService } from './IssueService';
+import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
 @inject(HttpClient, IssueService, BindingEngine)
 export class MapWidget {
   @bindable selectMarker;
@@ -18,6 +19,13 @@ export class MapWidget {
   issuesChanged() {
     this.bindingEngine.collectionObserver(this.issues)
       .subscribe(this.issuesCollectionChanged.bind(this));
+    for(let marker of this.markers.values()) {
+      marker.remove();
+    }
+    this.markers.clear();
+    for(let issue of this.issues.values()) {
+      this.addMarker(issue.id, issue.latlng);
+    }
   }
   issuesCollectionChanged(e) {
     const type = e[0].type;
@@ -101,8 +109,21 @@ export class MapWidget {
   }
   addMarker = (id, latlng) => {
     const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
-    if (layersContainingPoint.length > 0) {
-      var marker = new L.marker(latlng, { draggable: 'true' }).setIcon(new L.Icon.Default({ className: "unselectedMarker" })).addTo(this.map);
+    L.Icon.Glyph.MDI = L.Icon.Glyph.extend({
+      options: {
+        prefix: 'fas',
+        iconUrl: 'marker.png',
+        shadowUrl: 'shadow.png',
+        shadowSize:   [48, 48],
+        iconSize: [48, 48],
+        shadowAnchor: [-10, 17]
+      }
+    });
+    
+    // Factory
+    L.icon.glyph.mdi = function(options) { return new L.Icon.Glyph.MDI(options); };
+    if (layersContainingPoint.length > 0) {//question, lightbulb, thumbs-up plus, thumbs-down minus
+      var marker = new L.marker(latlng, { draggable: 'true',icon: L.icon.glyph.mdi({className: "unselectedMarker", prefix: 'fas', glyph: 'thumbs-up', glyphSize: "18px", glyphAnchor: [0, -6] })  }).addTo(this.map);
       marker.on('click', () => {
         this.selectMarker({id:id});
       });

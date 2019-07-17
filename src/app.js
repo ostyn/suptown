@@ -15,6 +15,8 @@ export class App {
       this.selectedMarkerId = id;
   }).bind(this);
 
+  //This happens on every move and creates a new collection, triggering a rebind and clear/load in the map
+  //This makes the icon flicker
   @computedFrom('bounds', 'issueService.issues.size')
   get filteredIssues() {
     if (this.bounds) {
