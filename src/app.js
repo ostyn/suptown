@@ -3,6 +3,7 @@ import { IssueService } from './IssueService';
 @inject(IssueService)
 export class App {
   @bindable bounds;
+  filtered = new Map();
   boundsChanged() {
     console.log("App knows what you did")
   }
@@ -11,7 +12,7 @@ export class App {
     this.issueService = issueService;
   }
   selectMarker = ((id) => {
-    if(this.issueService.getIssues().has(id))
+    if (this.issueService.getIssues().has(id))
       this.selectedMarkerId = id;
   }).bind(this);
 
@@ -20,12 +21,23 @@ export class App {
   @computedFrom('bounds', 'issueService.issues.size')
   get filteredIssues() {
     if (this.bounds) {
-      const filtered = new Map();
-      for (let [key, issue] of this.issueService.getIssues())
-        if (this.bounds.contains(issue.latlng))
-          filtered.set(key, issue);
-      return filtered;
+      let newFiltered = new Map();
+      //filter original data
+      for (let [key, issue] of this.issueService.getIssues()) {
+        if (this.bounds.contains(issue.latlng)) {
+          newFiltered.set(key, issue);
+        }
+      }
+      //remove unneeded values from old-filtered data
+      for (let [key, issue] of this.filtered) {
+        if (!newFiltered.has(key))
+          this.filtered.delete(key);
+      }
+      //add all other keys back
+      for (let [key, issue] of newFiltered) {
+        this.filtered.set(key, issue);
+      }
     }
-    return this.issueService.getIssues();
+    return this.filtered;
   }
 }

@@ -19,36 +19,31 @@ export class MapWidget {
   issuesChanged() {
     this.bindingEngine.collectionObserver(this.issues)
       .subscribe(this.issuesCollectionChanged.bind(this));
-    for(let marker of this.markers.values()) {
-      marker.remove();
-    }
-    this.markers.clear();
-    for(let issue of this.issues.values()) {
-      this.addMarker(issue.id, issue.latlng);
-    }
   }
-  issuesCollectionChanged(e) {
-    const type = e[0].type;
-    const id = e[0].key;
-    if (type === "delete") {
-      const marker = this.markers.get(id);
-      if (marker) {
-        marker.remove();
-        this.markers.delete(id);
+  issuesCollectionChanged(changes) {
+    for (let i = 0; i < changes.length; i++) {
+      const type = changes[i].type;
+      const id = changes[i].key;
+      if (type === "delete") {
+        const marker = this.markers.get(id);
+        if (marker) {
+          marker.remove();
+          this.markers.delete(id);
+        }
       }
-    }
-    if (type === "add") {
-      this.addMarker(id, this.issueService.getIssue(id).latlng);
+      if (type === "add") {
+        this.addMarker(id, this.issueService.getIssue(id));
+      }
     }
   }
   selectedMarkerIdChanged(newSelection, oldSelection) {
     const newMarker = this.markers.get(newSelection);
     if (newMarker) {
-      newMarker.setIcon(new L.Icon.Default());
+      newMarker.setIcon(this.getIcon(this.issues.get(newSelection).issueType));
     }
     const oldMarker = this.markers.get(oldSelection);
     if (oldMarker) {
-      oldMarker.setIcon(new L.Icon.Default({ className: "unselectedMarker" }));
+      oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection).issueType, "unselectedMarker"));
     }
   }
   constructor(http, issueService, bindingEngine) {
@@ -65,9 +60,9 @@ export class MapWidget {
         description: "Description",
         dateCreated: "test",
         dateUpdated: "test",
-        issueType: Issue.IssueType.GOOD
+        issueType: Issue.QUESTION
       });
-    this.selectMarker({id: id});
+    this.selectMarker({ id: id });
   }
   async attached() {
     this.map = L.map('map').setView([43.61, -116.19], 13);
@@ -107,25 +102,28 @@ export class MapWidget {
         prevent = true;
       });
   }
-  addMarker = (id, latlng) => {
-    const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
+  //question, lightbulb, thumbs-up, thumbs-down
+  getIcon(issueType, extraClasses = "") {
     L.Icon.Glyph.MDI = L.Icon.Glyph.extend({
       options: {
         prefix: 'fas',
         iconUrl: 'marker.png',
         shadowUrl: 'shadow.png',
-        shadowSize:   [48, 48],
+        shadowSize: [48, 48],
         iconSize: [48, 48],
         shadowAnchor: [-10, 17]
       }
     });
-    
-    // Factory
-    L.icon.glyph.mdi = function(options) { return new L.Icon.Glyph.MDI(options); };
-    if (layersContainingPoint.length > 0) {//question, lightbulb, thumbs-up plus, thumbs-down minus
-      var marker = new L.marker(latlng, { draggable: 'true',icon: L.icon.glyph.mdi({className: "unselectedMarker", prefix: 'fas', glyph: 'thumbs-up', glyphSize: "18px", glyphAnchor: [0, -6] })  }).addTo(this.map);
+    L.icon.glyph.mdi = function (options) { return new L.Icon.Glyph.MDI(options); };
+    return L.icon.glyph.mdi({ className: extraClasses, prefix: 'fas', glyph: Issue.mapping[issueType].glyph, glyphSize: "18px", glyphAnchor: [0, -6] });
+  }
+  addMarker = (id, issue) => {
+    const latlng = issue.latlng;
+    const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
+    if (layersContainingPoint.length > 0) {
+      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue.issueType) }).addTo(this.map);
       marker.on('click', () => {
-        this.selectMarker({id:id});
+        this.selectMarker({ id: id });
       });
       let startLocation;
       marker.on('dragend', (e) => {
