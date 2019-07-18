@@ -39,11 +39,11 @@ export class MapWidget {
   selectedMarkerIdChanged(newSelection, oldSelection) {
     const newMarker = this.markers.get(newSelection);
     if (newMarker) {
-      newMarker.setIcon(this.getIcon(this.issues.get(newSelection).issueType));
+      newMarker.setIcon(this.getIcon(this.issues.get(newSelection)));
     }
     const oldMarker = this.markers.get(oldSelection);
     if (oldMarker) {
-      oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection).issueType, "unselectedMarker"));
+      oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection)));
     }
   }
   constructor(http, issueService, bindingEngine) {
@@ -102,8 +102,8 @@ export class MapWidget {
         prevent = true;
       });
   }
-  //question, lightbulb, thumbs-up, thumbs-down
-  getIcon(issueType, extraClasses = "") {
+  getIcon(issue) {
+    let extraCss = this.selectedMarkerId == issue.id ? "" : "unselectedMarker"
     L.Icon.Glyph.MDI = L.Icon.Glyph.extend({
       options: {
         prefix: 'fas',
@@ -115,13 +115,13 @@ export class MapWidget {
       }
     });
     L.icon.glyph.mdi = function (options) { return new L.Icon.Glyph.MDI(options); };
-    return L.icon.glyph.mdi({ className: extraClasses, prefix: 'fas', glyph: Issue.mapping[issueType].glyph, glyphSize: "18px", glyphAnchor: [0, -6] });
+    return L.icon.glyph.mdi({ className: extraCss, prefix: 'fas', glyph: Issue.mapping[issue.issueType].glyph, glyphSize: "18px", glyphAnchor: [0, -6] });
   }
   addMarker = (id, issue) => {
     const latlng = issue.latlng;
     const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
     if (layersContainingPoint.length > 0) {
-      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue.issueType) }).addTo(this.map);
+      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue)}).addTo(this.map);
       marker.on('click', () => {
         this.selectMarker({ id: id });
       });
