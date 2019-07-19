@@ -1,5 +1,5 @@
 <template>
   <require from="./Issue"></require>
   Issues
-    <Issue click.trigger="selectMarker({id:id})" selected.bind="id == selectedMarkerId" class.bind="(id == selectedMarkerId)? 'selected' : 'unselected'" repeat.for="[id, issue] of issues" issue.bind="issue"></Issue>
+    <Issue id.bind="'issueNum'+id" click.trigger="selectMarker({id:id})" selected.bind="id == selectedMarkerId" class.bind="(id == selectedMarkerId)? 'selected' : 'unselected'" repeat.for="[id, issue] of issues" issue.bind="issue"></Issue>
 </template>

@@ -9,8 +9,7 @@
   <div if.bind="selected">
     <div><input value.bind="issue.title"></div>
     <textarea style="width:calc(100% - 10px)" value.bind="issue.description"></textarea>
-    <select value.bind="issue.issueType">
-      <option disabled>Select...</option>
+    <select value.bind="issue.issueType" change.delegate="issueTypeChanged(issue.id)">
       <option repeat.for="issueTypeOption of items()" model.bind="issueTypeOption">
         ${getIssueTypeName(issueTypeOption)}
       </option>

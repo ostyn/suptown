@@ -1,6 +1,7 @@
 import { inject, bindable } from "aurelia-framework";
 import { IssueService } from './IssueService';
-@inject(IssueService)
+import { EventAggregator } from 'aurelia-event-aggregator';
+@inject(IssueService, EventAggregator)
 export class Issue {
   @bindable issue;
   @bindable selected;
@@ -9,8 +10,9 @@ export class Issue {
   static IDEA = "IDEA";
   static QUESTION = "QUESTION";
 
-  constructor(issueService) {
+  constructor(issueService, eventAggregator) {
     this.issueService = issueService;
+    this.ea = eventAggregator;
   }
   getIssueTypeGlyph(issueType) {
     return Issue.mapping[issueType].glyph;
@@ -26,5 +28,8 @@ export class Issue {
   }
   getIssueTypeName(issueType){
     return Issue.mapping[issueType].name;
+  }
+  issueTypeChanged(id) {
+    this.ea.publish('issueTypeChanged', id);
   }
 }

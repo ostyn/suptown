@@ -6,7 +6,8 @@ import * as leafletPip from "@mapbox/leaflet-pip";
 import { Issue } from './Issue';
 import { IssueService } from './IssueService';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
-@inject(HttpClient, IssueService, BindingEngine)
+import { EventAggregator } from 'aurelia-event-aggregator';
+@inject(HttpClient, IssueService, BindingEngine, EventAggregator)
 export class MapWidget {
   @bindable selectMarker;
   @bindable selectedMarkerId;
@@ -46,10 +47,17 @@ export class MapWidget {
       oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection)));
     }
   }
-  constructor(http, issueService, bindingEngine) {
+  constructor(http, issueService, bindingEngine, ea) {
     this.http = http;
     this.issueService = issueService;
     this.bindingEngine = bindingEngine;
+    this.ea = ea;
+    let subscription = this.ea.subscribe('issueTypeChanged', (id) => {
+      const marker = this.markers.get(id);
+      if (marker) {
+        marker.setIcon(this.getIcon(this.issues.get(id)));
+      }
+  });
   }
   addIssue(latlng) {
     let id = this.issueService.addIssue(
