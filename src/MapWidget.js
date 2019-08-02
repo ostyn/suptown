@@ -117,9 +117,10 @@ export class MapWidget {
         prefix: 'fas',
         iconUrl: 'marker.png',
         shadowUrl: 'shadow.png',
+        iconAnchor: [24,48],
         shadowSize: [48, 48],
         iconSize: [48, 48],
-        shadowAnchor: [-10, 17]
+        shadowAnchor: [0, 28]
       }
     });
     L.icon.glyph.mdi = function (options) { return new L.Icon.Glyph.MDI(options); };
