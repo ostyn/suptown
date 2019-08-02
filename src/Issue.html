@@ -1,19 +1,22 @@
 <template>
-  <div if.bind="!selected">
+  <span if.bind="!editing">
     <div>${issue.title}</div>
     <!-- https://m.xkcd.com/2170/ -->
     <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
-    <div>${issue.description}</div>
+    <div if.bind="selected">${issue.description}</div>
     <i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i>
-  </div>
-  <div if.bind="selected">
-    <div><input value.bind="issue.title"></div>
-    <textarea style="width:calc(100% - 10px)" value.bind="issue.description"></textarea>
-    <select value.bind="issue.issueType" change.delegate="issueTypeChanged(issue.id)">
+    <button if.bind="selected" click.trigger="startEditing()">edit</button>
+  </span>
+  <span if.bind="editing">
+    <div><input value.bind="editingIssue.title"></div>
+    <textarea style="width:calc(100% - 10px)" value.bind="editingIssue.description"></textarea>
+    <select value.bind="editingIssue.issueType">
       <option repeat.for="issueTypeOption of items()" model.bind="issueTypeOption">
         ${getIssueTypeName(issueTypeOption)}
       </option>
     </select>
-  </div>
-  <button click.trigger="issueService.removeIssue(issue.id)">delete</button>
+    <button click.trigger="submit()">submit</button>
+    <button click.trigger="cancel()">cancel</button>
+  </span>
+  <button if.bind="selected" click.trigger="issueService.removeIssue(issue.id)">delete</button>
 </template>

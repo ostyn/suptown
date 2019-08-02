@@ -2,11 +2,7 @@ import { bindable, inject, computedFrom } from "aurelia-framework";
 import { IssueService } from './IssueService';
 @inject(IssueService)
 export class App {
-  @bindable bounds;
   filtered = new Map();
-  boundsChanged() {
-    console.log("App knows what you did")
-  }
   selectedMarkerId = undefined;
   constructor(issueService) {
     this.issueService = issueService;
@@ -18,7 +14,7 @@ export class App {
 
   //This happens on every move and creates a new collection, triggering a rebind and clear/load in the map
   //This makes the icon flicker
-  @computedFrom('bounds', 'issueService.issues.size')
+  @computedFrom('bounds', 'issueService.updateCount')
   get filteredIssues() {
     if (this.bounds) {
       let newFiltered = new Map();

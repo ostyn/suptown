@@ -6,8 +6,7 @@ import * as leafletPip from "@mapbox/leaflet-pip";
 import { Issue } from './Issue';
 import { IssueService } from './IssueService';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
-import { EventAggregator } from 'aurelia-event-aggregator';
-@inject(HttpClient, IssueService, BindingEngine, EventAggregator)
+@inject(HttpClient, IssueService, BindingEngine)
 export class MapWidget {
   @bindable selectMarker;
   @bindable selectedMarkerId;
@@ -35,6 +34,12 @@ export class MapWidget {
       if (type === "add") {
         this.addMarker(id, this.issueService.getIssue(id));
       }
+      if (type == "update") {
+        const marker = this.markers.get(id);
+        if (marker) {
+          marker.setIcon(this.getIcon(this.issues.get(id)));
+        }
+      }
     }
   }
   selectedMarkerIdChanged(newSelection, oldSelection) {
@@ -47,17 +52,10 @@ export class MapWidget {
       oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection)));
     }
   }
-  constructor(http, issueService, bindingEngine, ea) {
+  constructor(http, issueService, bindingEngine) {
     this.http = http;
     this.issueService = issueService;
     this.bindingEngine = bindingEngine;
-    this.ea = ea;
-    let subscription = this.ea.subscribe('issueTypeChanged', (id) => {
-      const marker = this.markers.get(id);
-      if (marker) {
-        marker.setIcon(this.getIcon(this.issues.get(id)));
-      }
-  });
   }
   addIssue(latlng) {
     let id = this.issueService.addIssue(
@@ -117,7 +115,7 @@ export class MapWidget {
         prefix: 'fas',
         iconUrl: 'marker.png',
         shadowUrl: 'shadow.png',
-        iconAnchor: [24,48],
+        iconAnchor: [24, 48],
         shadowSize: [48, 48],
         iconSize: [48, 48],
         shadowAnchor: [0, 28]
@@ -130,7 +128,7 @@ export class MapWidget {
     const latlng = issue.latlng;
     const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
     if (layersContainingPoint.length > 0) {
-      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue)}).addTo(this.map);
+      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue) }).addTo(this.map);
       marker.on('click', () => {
         this.selectMarker({ id: id });
       });
