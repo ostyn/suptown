@@ -46,7 +46,7 @@
 .list {
   vertical-align: top;
   display: inline-block;
-  width: 400px;
+  width: 250px;
   min-height: calc(100% - 10px);
   padding: 5px;
   overflow: auto;
@@ -54,7 +54,7 @@
 .map {
   vertical-align: top;
   display: inline-block;
-  width: calc(100% - 400px);
+  width: calc(100% - 250px);
   height: 100%;
 }
 .no4pxSpace {
