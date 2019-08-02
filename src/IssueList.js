@@ -4,9 +4,12 @@ export class IssueList {
   @bindable selectMarker;
   @bindable issues;
   selectedMarkerIdChanged() {
-    const el = document.getElementById('issueNum' + this.selectedMarkerId);
-    if (el)
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    //Using timeout to do this scrollTo once the item has been added to the DOM
+    setTimeout(() => {
+      const el = document.getElementById('issueNum' + this.selectedMarkerId);
+      if (el)
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1);
   }
   constructor() {
     this.selectedMarkerIdChanged = this.selectedMarkerIdChanged.bind(this);
