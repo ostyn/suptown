@@ -6,7 +6,9 @@ import * as leafletPip from "@mapbox/leaflet-pip";
 import { Issue } from './Issue';
 import { IssueService } from './IssueService';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
-@inject(HttpClient, IssueService, BindingEngine)
+import {EditIssue} from './EditIssue';
+import {DialogService} from 'aurelia-dialog';
+@inject(HttpClient, IssueService, BindingEngine, DialogService)
 export class MapWidget {
   @bindable selectMarker;
   @bindable selectedMarkerId;
@@ -52,23 +54,31 @@ export class MapWidget {
       oldMarker.setIcon(this.getIcon(this.issues.get(oldSelection)));
     }
   }
-  constructor(http, issueService, bindingEngine) {
+  constructor(http, issueService, bindingEngine, dialogService) {
+    this.dialogService = dialogService;
     this.http = http;
     this.issueService = issueService;
     this.bindingEngine = bindingEngine;
   }
   addIssue(latlng) {
-    let id = this.issueService.addIssue(
-      {
-        latlng: latlng,
-        author: "author",
-        title: "Title",
-        description: "Description",
-        dateCreated: "test",
-        dateUpdated: "test",
-        issueType: Issue.QUESTION
-      });
-    this.selectMarker({ id: id });
+    var marker = new L.marker(latlng, { draggable: 'true' }).addTo(this.map);
+    this.dialogService
+    .open({ viewModel: EditIssue,  lock: false })
+    .whenClosed(response => {
+      marker.remove();
+      if (!response.wasCancelled) {
+        let id = this.issueService.addIssue(
+          {
+            latlng: latlng,
+            author: "author",
+            title: response.output.title,
+            description: response.output.description,
+            dateCreated: new Date().toISOString(),
+            issueType: response.output.issueType
+          });
+        this.selectMarker({ id: id });
+      }
+    });
   }
   async attached() {
     this.map = L.map('map').setView([43.61, -116.19], 13);
@@ -92,7 +102,7 @@ export class MapWidget {
     }));
     this.map.locate({ enableHighAccuracy: true, setView: true, maxZoom: 16 });
     let timer, prevent;
-    this.map.on("moveend", (e) => {
+    this.map.on("move", (e) => {
       this.bounds = this.map.getBounds();
     });
     this.map.on("click", (e) => {

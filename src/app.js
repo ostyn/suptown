@@ -1,4 +1,4 @@
-import { bindable, inject, computedFrom } from "aurelia-framework";
+import { inject, computedFrom } from "aurelia-framework";
 import { IssueService } from './IssueService';
 @inject(IssueService)
 export class App {

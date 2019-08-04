@@ -1,22 +1,12 @@
 <template>
-  <span if.bind="!editing">
-    <div>${issue.title}</div>
-    <!-- https://m.xkcd.com/2170/ -->
-    <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
-    <div if.bind="selected">${issue.description}</div>
-    <i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i>
-    <button if.bind="selected" click.trigger="startEditing()">edit</button>
-  </span>
-  <span if.bind="editing">
-    <div><input value.bind="editingIssue.title"></div>
-    <textarea style="width:calc(100% - 10px)" value.bind="editingIssue.description"></textarea>
-    <select value.bind="editingIssue.issueType">
-      <option repeat.for="issueTypeOption of items()" model.bind="issueTypeOption">
-        ${getIssueTypeName(issueTypeOption)}
-      </option>
-    </select>
-    <button click.trigger="submit()">submit</button>
-    <button click.trigger="cancel()">cancel</button>
-  </span>
+  <div>${issue.title}</div>
+  <!-- https://m.xkcd.com/2170/ -->
+  <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
+  <div if.bind="selected">${issue.description}</div>
+  <i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i>
+  <div if.bind="selected">${issue.author}</div>
+  <div if.bind="selected && issue.dateUpdated">Updated ${issue.dateUpdated}</div>
+  <div if.bind="selected && issue.dateCreated">Created ${issue.dateCreated}</div>
   <button if.bind="selected" click.trigger="issueService.removeIssue(issue.id)">delete</button>
+  <button if.bind="selected" click.trigger="edit()">edit</button>
 </template>
