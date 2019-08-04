@@ -6,6 +6,9 @@ export class App {
   selectedMarkerId = undefined;
   constructor(issueService) {
     this.issueService = issueService;
+    window.onbeforeunload = function(){
+      return 'Are you sure you want to leave?';
+    };
   }
   selectMarker = ((id) => {
     if (this.issueService.getIssues().has(id))
