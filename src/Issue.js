@@ -1,8 +1,7 @@
 import { inject, bindable } from "aurelia-framework";
-import { IssueService } from './IssueService';
-import {DialogService} from 'aurelia-dialog';
-import {EditIssue} from './EditIssue';
-@inject(IssueService, DialogService)
+import { DialogService } from 'aurelia-dialog';
+import { ViewIssue } from './ViewIssue';
+@inject(DialogService)
 export class Issue {
   @bindable issue;
   @bindable selected;
@@ -12,28 +11,24 @@ export class Issue {
   static IDEA = "IDEA";
   static QUESTION = "QUESTION";
 
-  constructor(issueService, dialogService) {
-    this.issueService = issueService;
+  constructor(dialogService) {
     this.dialogService = dialogService;
   }
   getIssueTypeGlyph(issueType) {
+    return Issue.getIssueTypeGlyph(issueType);
+  }
+  static getIssueTypeGlyph(issueType) {
     return Issue.mapping[issueType].glyph;
   }
   static mapping = {
-    [this.GOOD] : {glyph: "thumbs-up", name: "Good"},
-    [this.BAD] : {glyph: "thumbs-down", name: "Bad"},
-    [this.IDEA] : {glyph: "lightbulb", name: "Idea"},
-    [this.QUESTION] : {glyph: "question", name: "Question"}
+    [this.GOOD]: { glyph: "thumbs-up", name: "Good" },
+    [this.BAD]: { glyph: "thumbs-down", name: "Bad" },
+    [this.IDEA]: { glyph: "lightbulb", name: "Idea" },
+    [this.QUESTION]: { glyph: "question", name: "Question" }
   }
-  edit(){
-    this.dialogService
-    .open({ viewModel: EditIssue, model: JSON.parse(JSON.stringify(this.issue)),  lock: false })
-    .whenClosed(response => {
-      if (!response.wasCancelled)
-      {
-        response.output.dateUpdated = new Date().toISOString();
-        this.issueService.updateIssue(response.output);
-      }
-    });
+  view() {
+    if (this.selected)
+      this.dialogService
+        .open({ viewModel: ViewIssue, model: this.issue, lock: false });
   }
 }

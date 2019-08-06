@@ -1,0 +1,18 @@
+<template>
+  <ux-dialog>
+      <ux-dialog-body>
+        <h2><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</h2>
+        <div>${issue.author}</div>
+        <!-- https://m.xkcd.com/2170/ -->
+        <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
+        <div>${issue.description}</div>
+        <div if.bind="issue.dateUpdated">Updated ${issue.dateUpdated}</div>
+        <div>Created ${issue.dateCreated}</div>
+      </ux-dialog-body>
+      <ux-dialog-footer>
+          <button click.trigger="delete()">delete</button>
+          <button click.trigger="edit()">edit</button>
+        <button click.trigger="controller.cancel()">Close</button>
+      </ux-dialog-footer>
+    </ux-dialog>
+</template>

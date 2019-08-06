@@ -1,12 +1,5 @@
 <template>
-  <div>${issue.title}</div>
-  <!-- https://m.xkcd.com/2170/ -->
-  <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
-  <div if.bind="selected">${issue.description}</div>
-  <i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i>
-  <div if.bind="selected">${issue.author}</div>
-  <div if.bind="selected && issue.dateUpdated">Updated ${issue.dateUpdated}</div>
-  <div if.bind="selected && issue.dateCreated">Created ${issue.dateCreated}</div>
-  <button if.bind="selected" click.trigger="issueService.removeIssue(issue.id)">delete</button>
-  <button if.bind="selected" click.trigger="edit()">edit</button>
+  <div click.trigger="view($event)">
+    <div><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</div>
+  </div>
 </template>
