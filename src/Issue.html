@@ -1,5 +1,7 @@
 <template>
   <div click.trigger="view($event)">
     <div><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</div>
+    <div if.bind="selected">${issue.author}</div>
+    <div if.bind="selected">Created ${issue.dateCreated}</div>
   </div>
 </template>
