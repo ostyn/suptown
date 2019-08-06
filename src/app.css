@@ -81,13 +81,6 @@ issue {
   -webkit-filter: hue-rotate(240deg) saturate(3.3) grayscale(50%);
   filter: hue-rotate(240deg) saturate(3.3) grayscale(50%);
 }
-
-/* issue > * {
-  margin-bottom: 5px;
-}
-issue > *:last-child {
-  margin-bottom: 0px;
-} */
 .issueTypeOption {
   width: 100px;
   background-color: rgba(78, 165, 70, 0.6);
