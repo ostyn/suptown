@@ -8,7 +8,6 @@ export class EditIssue {
     this.controller = controller;
   }
   activate(issue) {
-    console.log(issue);
     if (issue)
       this.issue = issue;
   }
