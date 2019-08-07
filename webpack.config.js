@@ -18,7 +18,7 @@ const title = 'Aurelia Navigation Skeleton';
 const outDir = path.resolve(__dirname, project.platform.output);
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
-const baseUrl = '/';
+const baseUrl = '/suptown/dist/';
 
 const cssRules = [
   { loader: 'css-loader' },
@@ -44,6 +44,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze, karma } =
     chunkFilename: production ? '[name].[chunkhash].chunk.js' : '[name].[hash].chunk.js'
   },
   optimization: {
+    concatenateModules: false,
     runtimeChunk: true,  // separates the runtime chunk, required for long term cacheability
     // moduleIds is the replacement for HashedModuleIdsPlugin and NamedModulesPlugin deprecated in https://github.com/webpack/webpack/releases/tag/v4.16.0
     // changes module id's to use hashes be based on the relative path of the module, required for long term cacheability
