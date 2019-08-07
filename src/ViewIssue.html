@@ -3,6 +3,7 @@
       <ux-dialog-body>
         <h2><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</h2>
         <div>${issue.author}</div>
+        <div id='map' class="modalMap"></div>
         <!-- https://m.xkcd.com/2170/ -->
         <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
         <div>${issue.description}</div>
@@ -12,7 +13,7 @@
       <ux-dialog-footer>
           <button click.trigger="delete()">delete</button>
           <button click.trigger="edit()">edit</button>
-        <button click.trigger="controller.cancel()">Close</button>
+        <button click.trigger="controller.cancel()">close</button>
       </ux-dialog-footer>
     </ux-dialog>
 </template>
