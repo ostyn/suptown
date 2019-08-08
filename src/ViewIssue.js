@@ -44,6 +44,8 @@ export class ViewIssue {
     });
     this.activeRegion.addTo(this.map);
     this.marker = new L.marker(this.issue.latlng, {icon: this.getIcon(this.issue) }).addTo(this.map);
+    if(this.editing)
+      this.marker.dragging.enable();
     let startLocation;
     this.marker.on('dragend', (e) => {
       const layersContainingPoint = leafletPip.pointInLayer(e.target._latlng, this.activeRegion);
