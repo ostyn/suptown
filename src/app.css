@@ -50,6 +50,7 @@
   min-height: calc(100% - 10px);
   padding: 5px;
   overflow: auto;
+  border-right: 1px solid rgb(200, 200, 200);
 }
 .map {
   vertical-align: top;
@@ -72,14 +73,18 @@ issue {
   border-radius: 4px;
 }
 .selected {
+  border-radius: 3px;
+  border: 1px solid rgb(150, 150, 150);
   background-color: rgba(117, 189, 248, 0.9);
 }
 .unselected {
+  border-radius: 3px;
+  border: 1px solid rgb(150, 150, 150);
   background-color: rgba(78, 165, 70, 0.6);
 }
 .unselectedMarker {
-  -webkit-filter: hue-rotate(240deg) saturate(3.3) grayscale(50%);
-  filter: hue-rotate(240deg) saturate(3.3) grayscale(50%);
+  -webkit-filter: hue-rotate(240deg) saturate(3.6) grayscale(70%);
+  filter: hue-rotate(240deg) saturate(3.6) grayscale(70%);
 }
 .issueTypeOption {
   background-color: rgba(78, 165, 70, 0.6);

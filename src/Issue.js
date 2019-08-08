@@ -18,7 +18,9 @@ export class Issue {
     return Issue.getIssueTypeGlyph(issueType);
   }
   static getIssueTypeGlyph(issueType) {
-    return Issue.mapping[issueType].glyph;
+    if(issueType && Issue.mapping[issueType])
+      return Issue.mapping[issueType].glyph;
+    return "not-available";
   }
   static mapping = {
     [this.GOOD]: { glyph: "thumbs-up", name: "Good" },
@@ -29,6 +31,6 @@ export class Issue {
   view() {
     if (this.selected)
       this.dialogService
-        .open({ viewModel: ViewIssue, model: this.issue, lock: false });
+        .open({ viewModel: ViewIssue, model: {issue: this.issue}, lock: false });
   }
 }

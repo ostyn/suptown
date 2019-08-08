@@ -9,19 +9,15 @@ export class IssueService {
   getIssue(id) {
     return this.issues.get(id);
   }
-  addIssue(issue) {
+  upsertIssue(issue) {
+    if(issue.dateCreated)
+      issue.dateUpdated = new Date().toISOString();
+    else
+      issue.dateCreated = new Date().toISOString();
+    if(issue.id === undefined)
+      issue.id = this.nextId++;
     this.updateCount++;
-    issue.id = this.nextId++;
     this.issues.set(issue.id, issue);
-    return issue.id;
-  }
-  updateIssue(issue) {
-    this.updateCount++;
-    this.issues.set(issue.id, issue);
-  }
-  updateIssueLatLng(id, latlng) {
-    this.updateCount++;
-    this.issues.get(id).latlng = latlng;
   }
   removeIssue(id) {
     this.updateCount++;

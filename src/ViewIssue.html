@@ -1,19 +1,30 @@
 <template>
   <ux-dialog>
-      <ux-dialog-body>
-        <h2><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</h2>
-        <div>${issue.author}</div>
-        <div id='map' class="modalMap"></div>
-        <!-- https://m.xkcd.com/2170/ -->
-        <div>${issue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
-        <div>${issue.description}</div>
-        <div if.bind="issue.dateUpdated">Updated ${issue.dateUpdated}</div>
-        <div>Created ${issue.dateCreated}</div>
-      </ux-dialog-body>
-      <ux-dialog-footer>
-          <button click.trigger="delete()">delete</button>
-          <button click.trigger="edit()">edit</button>
-        <button click.trigger="controller.cancel()">close</button>
-      </ux-dialog-footer>
-    </ux-dialog>
+    <ux-dialog-body>
+      <h2 if.bind="!editing"><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</h2>
+      <div if.bind="editing">
+        <span
+          class.bind="(beingEditedIssue.issueType == issueType)? 'issueTypeOption selectedIssueType' : 'issueTypeOption'"
+          repeat.for="issueType of items()" click.trigger="setIssueType(issueType)">
+          ${getIssueTypeName(issueType)} <span class.bind="'fa fa-' + getIssueTypeGlyph(issueType)"></span>
+        </span>
+      </div>
+      <input if.bind="editing" value.bind="beingEditedIssue.title">
+      <div>${issue.author}</div>
+      <!-- https://m.xkcd.com/2170/ -->
+      <div>${beingEditedIssue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
+      <div id='map' class="modalMap"></div>
+      <div if.bind="!editing">${issue.description}</div>
+      <textarea if.bind="editing" value.bind="beingEditedIssue.description"></textarea>
+      <div if.bind="issue.dateUpdated">Updated ${issue.dateUpdated}</div>
+      <div>Created ${issue.dateCreated}</div>
+    </ux-dialog-body>
+    <ux-dialog-footer>
+      <button if.bind="!newIssue" click.trigger="delete()">delete</button>
+      <button if.bind="!editing" click.trigger="edit()">edit</button>
+      <button if.bind="editing" click.trigger="submit()">submit</button>
+      <button if.bind="!editing || newIssue" click.trigger="controller.cancel()">close</button>
+      <button if.bind="editing && !newIssue" click.trigger="cancelEdit()">cancel</button>
+    </ux-dialog-footer>
+  </ux-dialog>
 </template>

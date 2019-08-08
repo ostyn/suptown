@@ -6,8 +6,8 @@ import * as leafletPip from "@mapbox/leaflet-pip";
 import { Issue } from './Issue';
 import { IssueService } from './IssueService';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
-import {EditIssue} from './EditIssue';
-import {DialogService} from 'aurelia-dialog';
+import { DialogService } from 'aurelia-dialog';
+import { ViewIssue } from './ViewIssue';
 @inject(HttpClient, IssueService, BindingEngine, DialogService)
 export class MapWidget {
   @bindable selectMarker;
@@ -40,6 +40,7 @@ export class MapWidget {
         const marker = this.markers.get(id);
         if (marker) {
           marker.setIcon(this.getIcon(this.issues.get(id)));
+          marker.setLatLng(this.issues.get(id).latlng);
         }
       }
     }
@@ -63,25 +64,23 @@ export class MapWidget {
   addIssue(latlng) {
     var marker = new L.marker(latlng, { draggable: 'true' }).addTo(this.map);
     this.dialogService
-    .open({ viewModel: EditIssue,  lock: false })
-    .whenClosed(response => {
-      marker.remove();
-      if (!response.wasCancelled) {
-        let id = this.issueService.addIssue(
-          {
+      .open({
+        viewModel: ViewIssue, model: {
+          issue: {
             latlng: latlng,
-            author: "author",
-            title: response.output.title,
-            description: response.output.description,
-            dateCreated: new Date().toISOString(),
-            issueType: response.output.issueType
-          });
-        this.selectMarker({ id: id });
-      }
-    });
+            author: "author"
+          }, editing: true, newIssue: true
+        }, lock: false
+      })
+      .whenClosed(response => {
+        marker.remove();
+        if (!response.wasCancelled) {
+          this.selectMarker({ id: id });
+        }
+      });
   }
   async attached() {
-    this.map = L.map('map').setView([43.61, -116.19], 13);
+    this.map = L.map('map', { attributionControl: false }).setView([43.61, -116.19], 13);
     L.control.locate().addTo(this.map);
     const response = await this.http.fetch('https://nominatim.openstreetmap.org/search.php?q=ada+county+Idaho&polygon_geojson=1&format=geojson');
     const data = await response.json();
@@ -138,22 +137,9 @@ export class MapWidget {
     const latlng = issue.latlng;
     const layersContainingPoint = leafletPip.pointInLayer(latlng, this.activeRegion);
     if (layersContainingPoint.length > 0) {
-      var marker = new L.marker(latlng, { draggable: 'true', icon: this.getIcon(issue) }).addTo(this.map);
+      var marker = new L.marker(latlng, { icon: this.getIcon(issue) }).addTo(this.map);
       marker.on('click', () => {
         this.selectMarker({ id: id });
-      });
-      let startLocation;
-      marker.on('dragend', (e) => {
-        const layersContainingPoint = leafletPip.pointInLayer(e.target._latlng, this.activeRegion);
-        if (layersContainingPoint.length == 0) {
-          marker.setLatLng(startLocation);
-        } else {
-          this.markers.get(id).setLatLng(e.target._latlng);
-          this.issues.get(id).latlng = e.target._latlng;
-        }
-      });
-      marker.on('dragstart', (e) => {
-        startLocation = e.target._latlng;
       });
       this.markers.set(id, marker);
     } else {
