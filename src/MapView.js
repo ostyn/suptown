@@ -4,7 +4,10 @@ import { IssueService } from './IssueService';
 export class MapView {
   filtered = new Map();
   selectedMarkerId = undefined;
-
+  activate(params, routeConfig){
+    if(params.id !== undefined)
+      this.selectMarker(Number.parseInt(params.id));
+  }
   constructor(issueService) {
     this.issueService = issueService;
     window.onbeforeunload = function () {

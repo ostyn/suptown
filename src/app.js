@@ -4,7 +4,7 @@ export class App {
     this.router = router;
     config.title = 'suptown';
     config.map([
-      { route: [''],       name: 'home',       moduleId: PLATFORM.moduleName('MapView') }
+      { route: [':id?'],       name: 'home',       moduleId: PLATFORM.moduleName('MapView') }
     ]);
   }
 }
