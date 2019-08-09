@@ -11,8 +11,6 @@
       </div>
       <input if.bind="editing" value.bind="beingEditedIssue.title">
       <div>${issue.author}</div>
-      <!-- https://m.xkcd.com/2170/ -->
-      <div>${beingEditedIssue.latlng.lat.toFixed(5)}, ${issue.latlng.lng.toFixed(5)}</div>
       <div id='map' class="modalMap"></div>
       <div if.bind="!editing">${issue.description}</div>
       <textarea if.bind="editing" value.bind="beingEditedIssue.description"></textarea>

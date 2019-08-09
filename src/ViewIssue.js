@@ -61,7 +61,6 @@ export class ViewIssue {
     });
   }
   getIcon(issue) {
-    let extraCss = this.selectedMarkerId == issue.id ? "" : "unselectedMarker"
     L.Icon.Glyph.MDI = L.Icon.Glyph.extend({
       options: {
         prefix: 'fas',
@@ -74,7 +73,7 @@ export class ViewIssue {
       }
     });
     L.icon.glyph.mdi = function (options) { return new L.Icon.Glyph.MDI(options); };
-    return L.icon.glyph.mdi({ className: extraCss, prefix: 'fas', glyph: ViewIssue.getIssueTypeGlyph(issue.issueType), glyphSize: "18px", glyphAnchor: [0, -6] });
+    return L.icon.glyph.mdi({prefix: 'fas', glyph: ViewIssue.getIssueTypeGlyph(issue.issueType), glyphSize: "18px", glyphAnchor: [0, -6] });
   }
   setIssueType(issueType) {
     this.beingEditedIssue.issueType = issueType;
@@ -114,7 +113,9 @@ export class ViewIssue {
     this.editing = false;
     this.issue = this.beingEditedIssue;
     this.marker.setIcon(this.getIcon(this.issue));
-    this.issueService.upsertIssue(this.issue);
     this.beingEditedIssue = undefined;
+    let id = this.issueService.upsertIssue(this.issue);
+    if(this.newIssue)
+      this.controller.ok(id);
   }
 }

@@ -75,7 +75,7 @@ export class MapWidget {
       .whenClosed(response => {
         marker.remove();
         if (!response.wasCancelled) {
-          this.selectMarker({ id: id });
+          this.selectMarker({ id: response.output });
         }
       });
   }
@@ -118,7 +118,7 @@ export class MapWidget {
       });
   }
   getIcon(issue) {
-    let extraCss = this.selectedMarkerId == issue.id ? "" : "unselectedMarker"
+    let extraCss = this.selectedMarkerId == issue.id ? "selectedMarker" : "unselectedMarker"
     L.Icon.Glyph.MDI = L.Icon.Glyph.extend({
       options: {
         prefix: 'fas',

@@ -40,6 +40,7 @@
 .leaflet-interactive{
   cursor: grab;
 }
+
 .leaflet-marker-draggable {
   cursor: move !important;
 }
@@ -85,6 +86,10 @@ issue {
 .unselectedMarker {
   -webkit-filter: hue-rotate(240deg) saturate(3.6) grayscale(70%);
   filter: hue-rotate(240deg) saturate(3.6) grayscale(70%);
+  cursor: pointer;
+}
+.selectedMarker{
+  cursor: pointer;
 }
 .issueTypeOption {
   background-color: rgba(78, 165, 70, 0.6);

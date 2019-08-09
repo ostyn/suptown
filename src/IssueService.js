@@ -18,6 +18,7 @@ export class IssueService {
       issue.id = this.nextId++;
     this.updateCount++;
     this.issues.set(issue.id, issue);
+    return issue.id;
   }
   removeIssue(id) {
     this.updateCount++;
