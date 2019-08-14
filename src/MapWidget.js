@@ -7,7 +7,7 @@ import { Issue } from './Issue';
 import { IssueService } from './IssueService';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
 import { DialogService } from 'aurelia-dialog';
-import { ViewIssue } from './ViewIssue';
+import { IssueView } from './IssueView';
 @inject(HttpClient, IssueService, BindingEngine, DialogService)
 export class MapWidget {
   @bindable selectMarker;
@@ -69,11 +69,8 @@ export class MapWidget {
     var marker = new L.marker(latlng, { draggable: 'true' }).addTo(this.map);
     this.dialogService
       .open({
-        viewModel: ViewIssue, model: {
-          issue: {
-            latlng: latlng,
-            author: "author"
-          }, editing: true, newIssue: true
+        viewModel: IssueView, model: {
+          latlng: latlng, editing: true, newIssue: true
         }, lock: false
       })
       .whenClosed(response => {

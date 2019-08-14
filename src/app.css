@@ -108,3 +108,7 @@ issue {
 .modalMap {
   height: 100px !important;
 }
+.issueView{
+  background: white;
+  padding: 20px;
+}

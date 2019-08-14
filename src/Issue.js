@@ -1,6 +1,6 @@
 import { inject, bindable } from "aurelia-framework";
 import { DialogService } from 'aurelia-dialog';
-import { ViewIssue } from './ViewIssue';
+import { IssueView } from './IssueView';
 @inject(DialogService)
 export class Issue {
   @bindable issue;
@@ -31,6 +31,6 @@ export class Issue {
   view() {
     if (this.selected)
       this.dialogService
-        .open({ viewModel: ViewIssue, model: {issue: this.issue}, lock: false });
+        .open({ viewModel: IssueView, model: {id: this.issue.id}, lock: false });
   }
 }
