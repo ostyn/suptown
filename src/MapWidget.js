@@ -14,6 +14,7 @@ export class MapWidget {
   @bindable selectedMarkerId;
   @bindable issues;
   @bindable bounds;
+  @bindable latLngZoom;
   //https://docs.mongodb.com/manual/reference/operator/query/box/
   map;
   activeRegion;
@@ -21,6 +22,9 @@ export class MapWidget {
   issuesChanged() {
     this.bindingEngine.collectionObserver(this.issues)
       .subscribe(this.issuesCollectionChanged.bind(this));
+  }
+  latLngZoomChanged() {
+    console.log(this.latLngZoom);
   }
   issuesCollectionChanged(changes) {
     for (let i = 0; i < changes.length; i++) {
@@ -80,7 +84,12 @@ export class MapWidget {
       });
   }
   async attached() {
-    this.map = L.map('map', { attributionControl: false }).setView([43.61, -116.19], 13);
+
+    this.map = L.map('map', { attributionControl: false })
+    if (this.latLngZoom) {
+      const parts = this.latLngZoom.split(',')
+      this.map.setView([parts[0], parts[1]], parts[2]);
+    }
     L.control.locate().addTo(this.map);
     const response = await this.http.fetch('https://nominatim.openstreetmap.org/search.php?q=ada+county+Idaho&polygon_geojson=1&format=geojson');
     const data = await response.json();
@@ -99,10 +108,14 @@ export class MapWidget {
       maxZoom: 19,
       minZoom: 4
     }));
-    this.map.locate({ enableHighAccuracy: true, setView: true, maxZoom: 16 });
+    this.map.locate({ enableHighAccuracy: true, setView: (!this.latLngZoom), maxZoom: 16 });
     let timer, prevent;
     this.map.on("move", (e) => {
       this.bounds = this.map.getBounds();
+    });
+    this.map.on("moveend", (e) => {
+      
+      this.latLngZoom = this.map.getCenter().lat.toFixed(7) + "," + this.map.getCenter().lng.toFixed(7) + "," + this.map.getZoom();
     });
     this.map.on("click", (e) => {
       timer = setTimeout((() => {
@@ -145,10 +158,6 @@ export class MapWidget {
     } else {
       this.issueService.removeIssue(id);
     }
-  }
-  //Probably won't use this because it doesn't work well on mobile
-  attachTooltipToMarker(marker) {
-    marker.bindTooltip("my tooltip text").openTooltip();
   }
 
   pointIsInVisibleMap(latlng) {

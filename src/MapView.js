@@ -1,15 +1,21 @@
-import { inject, computedFrom } from "aurelia-framework";
+import { inject, computedFrom, observable } from "aurelia-framework";
+import { Router} from "aurelia-router";
 import { IssueService } from './IssueService';
-@inject(IssueService)
+@inject(IssueService, Router)
 export class MapView {
   filtered = new Map();
   selectedMarkerId = undefined;
+  @observable latLngZoom;
   activate(params, routeConfig){
-    if(params.id !== undefined)
-      this.selectMarker(Number.parseInt(params.id));
+    if(params.latLngZoom !== undefined)
+      this.latLngZoom = params.latLngZoom;
   }
-  constructor(issueService) {
+  latLngZoomChanged(){
+    this.router.navigateToRoute("home", {latLngZoom: this.latLngZoom});
+  }
+  constructor(issueService, router) {
     this.issueService = issueService;
+    this.router = router;
     window.onbeforeunload = function () {
       return 'Are you sure you want to leave?';
     };
