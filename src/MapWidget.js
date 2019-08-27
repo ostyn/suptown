@@ -107,11 +107,8 @@ export class MapWidget {
     }));
     this.map.locate({ enableHighAccuracy: true, setView: (!this.latLngZoom), maxZoom: 16 });
     let timer, prevent;
-    this.map.on("move", (e) => {
-      this.bounds = this.map.getBounds();
-    });
     this.map.on("moveend", (e) => {
-      
+      this.bounds = this.map.getBounds();
       this.latLngZoom = this.map.getCenter().lat.toFixed(7) + "," + this.map.getCenter().lng.toFixed(7) + "," + this.map.getZoom();
     });
     this.map.on("click", (e) => {

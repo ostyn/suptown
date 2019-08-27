@@ -36,6 +36,7 @@ export class MapView {
         newFiltered.set(key, issue);
       }
     }
+
     //remove unneeded values from old-filtered data
     for (let [key, issue] of this.filtered) {
       if (!newFiltered.has(key))

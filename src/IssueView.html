@@ -1,5 +1,5 @@
 <template>
-  <div class="issueView">
+  <div class="issueView" if.bind="issue">
     <div>
       <h2 if.bind="!editing"><i class.bind="'fa fa-' + getIssueTypeGlyph(issue.issueType)"></i> ${issue.title}</h2>
       <div if.bind="editing">
@@ -11,7 +11,7 @@
       </div>
       <input if.bind="editing" value.bind="beingEditedIssue.title">
       <div>${issue.author}</div>
-      <div id='map' class="modalMap"></div>
+      <div id.bind='mapId' class="modalMap"></div>
       <div if.bind="!editing">${issue.description}</div>
       <textarea if.bind="editing" value.bind="beingEditedIssue.description"></textarea>
       <div if.bind="issue.dateUpdated">Updated ${issue.dateUpdated}</div>

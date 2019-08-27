@@ -22,7 +22,7 @@ export class IssueView {
   }
   activate(model) {
     if (model.id !== undefined) {
-      let storedIssue = this.issueService.getIssue(Number.parseInt(model.id));
+      let storedIssue = this.issueService.getIssue(model.id);
       if (storedIssue)
         this.issue = storedIssue;
     } else if (model.latlng) {
@@ -32,8 +32,11 @@ export class IssueView {
     this.newIssue = model.newIssue;
     this.editing = model.editing;
   }
+  get mapId(){
+    return 'map' + (this.issue.id || "newIssue")
+  }
   async attached() {
-    this.map = L.map('map', { zoomControl: false, attributionControl: false }).setView([this.issue.latlng.lat, this.issue.latlng.lng], 14);
+    this.map = L.map(this.mapId, { zoomControl: false, attributionControl: false }).setView([this.issue.latlng.lat, this.issue.latlng.lng], 14);
     let urlTemplate = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
     this.map.addLayer(L.tileLayer(urlTemplate, {
       maxZoom: 19,
