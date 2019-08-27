@@ -8,10 +8,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@mapbox/leaflet-pip": "^1.1.0",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.3.2",
     "aurelia-dialog": "^2.0.0-rc.6",
-    "leaflet": "^1.5.1"
+    "aurelia-fetch-client": "^1.8.2",
+    "leaflet": "^1.5.1",
+    "leaflet.icon.glyph": "^0.2.1",
+    "leaflet.locatecontrol": "^0.67.0"
   },
   "devDependencies": {
     "aurelia-cli": "^1.0.0-beta.15",
