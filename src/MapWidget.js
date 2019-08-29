@@ -81,7 +81,6 @@ export class MapWidget {
       });
   }
   async attached() {
-
     this.map = L.map('map', { attributionControl: false })
     if (this.latLngZoom) {
       const parts = this.latLngZoom.split(',')

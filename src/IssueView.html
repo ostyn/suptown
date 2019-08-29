@@ -18,8 +18,8 @@
       <div>Created ${issue.dateCreated}</div>
     </div>
     <div>
-      <button if.bind="!newIssue" click.trigger="delete()">delete</button>
-      <button if.bind="!editing" click.trigger="edit()">edit</button>
+      <button if.bind="!newIssue  && user" click.trigger="delete()">delete</button>
+      <button if.bind="!editing && user" click.trigger="edit()">edit</button>
       <button if.bind="editing" click.trigger="submit()">submit</button>
       <button if.bind="!editing || newIssue" click.trigger="controller.cancel()">close</button>
       <button if.bind="editing && !newIssue" click.trigger="cancelEdit()">cancel</button>

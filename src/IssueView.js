@@ -8,6 +8,7 @@ import * as L from 'leaflet';
 import "leaflet.icon.glyph/Leaflet.Icon.Glyph.js";
 import { HttpClient } from 'aurelia-fetch-client';
 import {activationStrategy} from 'aurelia-router';
+import firebase from "firebase";
 @inject(DialogController, DialogService, IssueService, HttpClient)
 export class IssueView {
   editing = false;
@@ -16,6 +17,13 @@ export class IssueView {
     this.dialogService = dialogService;
     this.issueService = issueService;
     this.http = http;
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.user = user;
+      } else {
+        this.user = undefined;
+      }
+    });
   }
   determineActivationStrategy() {
     return activationStrategy.replace;
@@ -121,11 +129,9 @@ export class IssueView {
   submit() {
     this.marker.dragging.disable();
     this.editing = false;
-    this.issue = this.beingEditedIssue;
-    this.marker.setIcon(this.getIcon(this.issue));
+    this.marker.setIcon(this.getIcon(this.beingEditedIssue));
+    let returnedIssue = this.issueService.upsertIssue(this.beingEditedIssue);
     this.beingEditedIssue = undefined;
-    let id = this.issueService.upsertIssue(this.issue);
-    if (this.newIssue)
-      this.controller.ok(id);
+    this.issue = returnedIssue;
   }
 }
