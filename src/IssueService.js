@@ -37,7 +37,7 @@ export class IssueService {
   getIssue(id) {
     return this.issues.get(id);
   }
-  upsertIssue(issue) {
+  async upsertIssue(issue) {
     if (issue.id) {
       let issueToSave = {
         ...issue,
@@ -45,9 +45,10 @@ export class IssueService {
         dateCreated: new Date(issue.dateCreated),
         latlng: new firebase.firestore.GeoPoint(issue.latlng.lat, issue.latlng.lng)
       };
-      this.updateCount++;
       console.log(issueToSave);
-      this.db.collection("issues").doc(issueToSave.id + "").set(issueToSave);
+      await this.db.collection("issues").doc(issueToSave.id + "").set(issueToSave);
+      await this.fetchIssues();
+      this.updateCount++;
       return issueToSave;
     } else {
       let currentTime = new Date;
@@ -58,14 +59,17 @@ export class IssueService {
         latlng: new firebase.firestore.GeoPoint(issue.latlng.lat, issue.latlng.lng),
         author: firebase.auth().currentUser.uid
       };
-      this.updateCount++;
       console.log(issueToSave2);
-      this.db.collection("issues").add(issueToSave2);
+      await this.db.collection("issues").add(issueToSave2);
+      await this.fetchIssues();
+      this.updateCount++;
       return issueToSave2;
     }
   }
-  removeIssue(id) {
+  async removeIssue(id) {
+    const issue = await this.db.collection("issues").doc(id + "").delete();
+    this.issues.delete(id+"");
     this.updateCount++;
-    return this.db.collection("issues").doc(id + "").delete();
+    return issue;
   }
 }

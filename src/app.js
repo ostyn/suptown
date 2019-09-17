@@ -15,6 +15,7 @@ export class App {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.user = user;
+        this.shouldShowLogin = false;
       } else {
         this.user = undefined;
         this.ui.start('#firebaseui-auth-container', uiConfig);
@@ -44,5 +45,11 @@ export class App {
   logout = function () {
     firebase.auth().signOut();
     // this.ui.start('#firebaseui-auth-container', {});
+  }
+  showLogin() {
+    this.shouldShowLogin = true;
+  }
+  hideLogin() {
+    this.shouldShowLogin = false;
   }
 }

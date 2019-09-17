@@ -126,11 +126,11 @@ export class IssueView {
     this.marker.setLatLng(this.issue.latlng);
     this.editing = false;
   }
-  submit() {
+  async submit() {
     this.marker.dragging.disable();
     this.editing = false;
     this.marker.setIcon(this.getIcon(this.beingEditedIssue));
-    let returnedIssue = this.issueService.upsertIssue(this.beingEditedIssue);
+    let returnedIssue = await this.issueService.upsertIssue(this.beingEditedIssue);
     this.beingEditedIssue = undefined;
     this.issue = returnedIssue;
   }

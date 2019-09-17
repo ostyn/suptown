@@ -1,7 +1,11 @@
 <template>
-  <div id="firebaseui-auth-container"></div>
-  <div if.bind="user">
-    ${user.displayName} - ${user.email}
+  <div class="auth" show.bind="!user">
+    <button if.bind="!shouldShowLogin" click.delegate="showLogin()">login</button>
+    <button class="cancelLogin" if.bind="shouldShowLogin" click.delegate="hideLogin()">cancel</button>
+    <div show.bind="shouldShowLogin" id="firebaseui-auth-container"></div>
+  </div>
+  <div class="auth" show.bind="user">
+    ${user.displayName}
     <button click.delegate="logout()">logout</button>
   </div>
   <router-view></router-view>
